@@ -1,75 +1,75 @@
 # Product Manager
 
-Aplikacija za upravljanje trgovinama, zaposlenicima i narudžbama proizvoda, s web sučeljem i scraperom koji dohvaća proizvode s vanjske stranice.
+An application for managing stores, employees, and product orders, with a web interface and a scraper that pulls products from an external site.
 
-Nastalo na TIS Academy Spring radionici 2026 kao timski projekt (tim Mljet), uz naknadne ispravke i doradu.
+Built during the TIS Academy Spring workshop 2026 as a team project (team Mljet), with fixes and improvements made afterward.
 
-## Tehnologije
+## Tech stack
 
-| Sloj | Tehnologija |
+| Layer | Technology |
 | --- | --- |
-| Aplikacija | Java 25, Spring Boot 4.1 |
-| Baza | Spring Data JPA, Hibernate, H2 |
-| Sučelje | Thymeleaf |
-| Mapiranje | MapStruct |
+| Application | Java 25, Spring Boot 4.1 |
+| Database | Spring Data JPA, Hibernate, H2 |
+| UI | Thymeleaf |
+| Mapping | MapStruct |
 | Scraping | jsoup |
-| Dokumentacija | springdoc OpenAPI (Swagger UI) |
+| Documentation | springdoc OpenAPI (Swagger UI) |
 
-## Preduvjeti
+## Prerequisites
 
-Projekt ovisi o modulu `hr.tis.academy:common`. Ako ga nemaš u lokalnom Maven repozitoriju, prvo ga instaliraj:
+The project depends on the `hr.tis.academy:common` module. If you don't have it in your local Maven repository, install it first:
 
 ```bash
 cd ../common && ./mvnw install
 ```
 
-## Pokretanje
+## Running
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Aplikacija se diže na `http://localhost:9090/product_manager_mljet`.
+The app starts at `http://localhost:9090/product_manager_mljet`.
 
-Baza je H2 u datoteci s `ddl-auto=create`, pa se shema gradi iznova pri svakom pokretanju, a početni podaci učitavaju iz `src/main/resources/init.sql`.
+The database is a file-based H2 instance with `ddl-auto=create`, so the schema is rebuilt on every startup and seed data is loaded from `src/main/resources/init.sql`.
 
-## Sučelje
+## Pages
 
-| Stranica | Putanja |
+| Page | Path |
 | --- | --- |
-| Naslovnica | `/` |
-| Pregled proizvoda | `/products-view` |
-| Popis trgovina | `/stores-view` |
-| Detalji trgovine | `/stores-view/{storeId}` |
-| Nova trgovina | `/stores-view/new` |
+| Home | `/` |
+| Browse products | `/products-view` |
+| Store list | `/stores-view` |
+| Store details | `/stores-view/{storeId}` |
+| New store | `/stores-view/new` |
 
 ## API
 
-| Metoda | Putanja | Opis |
+| Method | Path | Description |
 | --- | --- | --- |
-| `GET` | `/stores` | sve trgovine |
-| `GET` | `/stores/{id}` | jedna trgovina |
-| `POST` | `/stores` | nova trgovina |
-| `PUT` | `/stores/{id}` | zamjena podataka trgovine |
-| `PATCH` | `/stores/{id}` | djelomična izmjena |
-| `DELETE` | `/stores/{id}` | brisanje |
-| `GET` | `/products` | proizvodi za datum |
-| `GET` | `/products/sum` | zbroj cijena za datum |
-| `GET` | `/products/fetch` | dohvat proizvoda s weba |
-| `POST` | `/products/save` | dohvat i spremanje proizvoda |
-| `GET` | `/orders` | sve narudžbe |
-| `POST` | `/orders` | nova narudžba |
-| `GET` | `/common/image` | generiranje PNG slike s tekstom |
+| `GET` | `/stores` | all stores |
+| `GET` | `/stores/{id}` | a single store |
+| `POST` | `/stores` | create a store |
+| `PUT` | `/stores/{id}` | replace store data |
+| `PATCH` | `/stores/{id}` | partial update |
+| `DELETE` | `/stores/{id}` | delete |
+| `GET` | `/products` | products for a date |
+| `GET` | `/products/sum` | sum of prices for a date |
+| `GET` | `/products/fetch` | fetch products from the web |
+| `POST` | `/products/save` | fetch and save products |
+| `GET` | `/orders` | all orders |
+| `POST` | `/orders` | create an order |
+| `GET` | `/common/image` | generate a PNG image with text |
 
-## Profili
+## Profiles
 
-Repozitorij proizvoda ima dvije izvedbe koje se biraju Spring profilom:
+The product repository has two implementations selected by a Spring profile:
 
-| Profil | Pohrana |
+| Profile | Storage |
 | --- | --- |
-| `memory` | u memoriji (zadano, postavljeno u `application.properties`) |
-| `db` | izravno preko JDBC-a |
+| `memory` | in-memory (default, set in `application.properties`) |
+| `db` | directly via JDBC |
 
-## Rukovanje greškama
+## Error handling
 
-Sve iznimke prolaze kroz `@ControllerAdvice`. Nepostojeći zapisi vraćaju 404 uz poruku, neispravan unos 400, a neočekivane greške 500 s referentnim identifikatorom koji se zapisuje u log.
+All exceptions go through a `@ControllerAdvice`. Missing records return 404 with a message, invalid input returns 400, and unexpected errors return 500 with a reference id that's logged.
