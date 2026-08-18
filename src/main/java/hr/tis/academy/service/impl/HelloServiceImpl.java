@@ -2,7 +2,6 @@ package hr.tis.academy.service.impl;
 
 import hr.tis.academy.common.dto.*;
 import hr.tis.academy.service.HelloService;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -17,20 +16,10 @@ public class HelloServiceImpl implements HelloService {
         return LocalDate.now().getDayOfWeek().name();
     }
 
-    private boolean isWeekend() {
-        int value = LocalDate.now().getDayOfWeek().getValue();
-        if (value == 6 || value == 7) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     @Override
     public boolean isWeekend(String day) {
         return "SATURDAY".equals(day) || "SUNDAY".equals(day);
     }
-
 
     private List<String> oddDays() {
         List<String> oddDays = new ArrayList<>();
@@ -54,6 +43,7 @@ public class HelloServiceImpl implements HelloService {
 
     @Override
     public DayOfWeekResponse daysOfWeek() {
-        return new DayOfWeekResponse(today(), isWeekend(), oddDays(), evenDays());
+        String today = today();
+        return new DayOfWeekResponse(today, isWeekend(today), oddDays(), evenDays());
     }
 }

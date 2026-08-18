@@ -18,7 +18,7 @@ import java.util.List;
 @Profile("db")
 public class ProductRepositoryDB implements ProductRepository {
 
-    public String fetchKorisnik(Long id) {
+    public String fetchUser(Long id) {
         String querySQL = "SELECT * FROM USERS WHERE ID = ?";
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement preparedStatement =
@@ -49,13 +49,11 @@ public class ProductRepositoryDB implements ProductRepository {
             throw new DatabaseException(e);
         }
         return users;
-
-
     }
 
     public Long insertProducts(ProductsMetadata productsMetadata) {
         String recordSQL = "INSERT INTO PRODUCTS_METADATA (CREATED_TIME, TITLE) VALUES (?, ?)";
-        String productSQL = "INSERT INTO PRODUCTS (NAME, PRICE, PRODUCTS_METADATA_ID) VALUES (?, ?, ?)";
+        String productSQL = "INSERT INTO PRODUCTS (NAME, PRICE, UNIT, GRADE, PRODUCTS_METADATA_ID) VALUES (?, ?, ?, ?, ?)";
         long recordId;
         try (Connection connection = Database.getInstance().getConnection()) {
             connection.setAutoCommit(false);
@@ -85,7 +83,9 @@ public class ProductRepositoryDB implements ProductRepository {
             for (Product product : productsMetadata.getProducts()) {
                 productStmt.setString(1, product.getName());
                 productStmt.setBigDecimal(2, product.getPrice());
-                productStmt.setLong(3, recordId);
+                productStmt.setString(3, product.getUnit());
+                productStmt.setInt(4, product.getGrade());
+                productStmt.setLong(5, recordId);
                 productStmt.addBatch();
             }
             productStmt.executeBatch();
@@ -126,25 +126,21 @@ public class ProductRepositoryDB implements ProductRepository {
 
     @Override
     public ProductsMetadata fetchProductsMetadata(LocalDate createdDate) {
-        List<Product> listaProizvoda = new ArrayList<>();
-
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement metadataStatement = connection.prepareStatement("SELECT * FROM PRODUCTS_METADATA\n" +
                      "WHERE PRODUCTS_METADATA.CREATED_TIME = ?;")) {
             metadataStatement.setDate(1, Date.valueOf(createdDate));
             ResultSet metadataRs = metadataStatement.executeQuery();
-            while (metadataRs.next()) {
-                try (PreparedStatement productStatement = connection.prepareStatement("SELECT PRODUCTS.* FROM PRODUCTS_METADATA\n" +
-                        "JOIN PRODUCTS ON PRODUCTS_METADATA.PRODUCTS_METADATA_ID = PRODUCTS.PRODUCTS_METADATA_ID\n" +
-                        "WHERE PRODUCTS_METADATA.CREATED_TIME = ?;")) {
-                        productStatement.setDate(1, Date.valueOf(createdDate));
-                        ResultSet productRs = productStatement.executeQuery();
-                    while (productRs.next()) {
-                        listaProizvoda.add(new Product(productRs.getString("NAME"), productRs.getBigDecimal("PRICE"), productRs.getInt("GRADE"), productRs.getString("UNIT")));
-                    }
-                }
+
+            if (!metadataRs.next()) {
+                return null;
             }
-            return new ProductsMetadata(metadataRs.getLong("PRODUCTS_METADATA_ID"), metadataRs.getObject("CREATED_TIME", LocalDateTime.class), metadataRs.getString("TITLE"), listaProizvoda);
+
+            Long id = metadataRs.getLong("PRODUCTS_METADATA_ID");
+            LocalDateTime createdTime = metadataRs.getObject("CREATED_TIME", LocalDateTime.class);
+            String title = metadataRs.getString("TITLE");
+
+            return new ProductsMetadata(id, createdTime, title, fetchProductsForMetadata(connection, id));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -152,28 +148,36 @@ public class ProductRepositoryDB implements ProductRepository {
 
     @Override
     public ProductsMetadata fetchProductsMetadata(Long id) {
-        List<Product> listaProizvoda = new ArrayList<>();
-
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement metadataStatement = connection.prepareStatement("SELECT * FROM PRODUCTS_METADATA\n" +
                      "WHERE PRODUCTS_METADATA.PRODUCTS_METADATA_ID = ?;")) {
             metadataStatement.setLong(1, id);
             ResultSet metadataRs = metadataStatement.executeQuery();
-            while (metadataRs.next()) {
-                try (PreparedStatement productStatement = connection.prepareStatement("SELECT PRODUCTS.* FROM PRODUCTS_METADATA\n" +
-                        "JOIN PRODUCTS ON PRODUCTS_METADATA.PRODUCTS_METADATA_ID = PRODUCTS.PRODUCTS_METADATA_ID\n" +
-                        "WHERE PRODUCTS_METADATA.PRODUCTS_METADATA_ID = ?;")) {
-                    productStatement.setLong(1, id);
-                    ResultSet productRs = productStatement.executeQuery();
-                    while (productRs.next()) {
-                        listaProizvoda.add(new Product(productRs.getString("NAME"), productRs.getBigDecimal("PRICE"), productRs.getInt("GRADE"), productRs.getString("UNIT")));
-                    }
-                }
+
+            if (!metadataRs.next()) {
+                return null;
             }
-            return new ProductsMetadata(metadataRs.getLong("PRODUCTS_METADATA_ID"), metadataRs.getObject("CREATED_TIME", LocalDateTime.class), metadataRs.getString("TITLE"), listaProizvoda);
+
+            LocalDateTime createdTime = metadataRs.getObject("CREATED_TIME", LocalDateTime.class);
+            String title = metadataRs.getString("TITLE");
+
+            return new ProductsMetadata(id, createdTime, title, fetchProductsForMetadata(connection, id));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
+    }
+
+    private List<Product> fetchProductsForMetadata(Connection connection, Long metadataId) throws SQLException {
+        List<Product> products = new ArrayList<>();
+        try (PreparedStatement productStatement = connection.prepareStatement(
+                "SELECT * FROM PRODUCTS WHERE PRODUCTS.PRODUCTS_METADATA_ID = ?;")) {
+            productStatement.setLong(1, metadataId);
+            ResultSet productRs = productStatement.executeQuery();
+            while (productRs.next()) {
+                products.add(new Product(productRs.getString("NAME"), productRs.getBigDecimal("PRICE"), productRs.getInt("GRADE"), productRs.getString("UNIT")));
+            }
+        }
+        return products;
     }
 
     @Override
@@ -190,8 +194,7 @@ public class ProductRepositoryDB implements ProductRepository {
 
     @Override
     public List<ProductsMetadata> fetchAllProductsMetadataByDate(LocalDate createdDate) {
-
-        List<ProductsMetadata> listaMetadata = new ArrayList<>();
+        List<ProductsMetadata> metadataList = new ArrayList<>();
         try (Connection connection = Database.getInstance().getConnection();
              PreparedStatement metadataStatement = connection.prepareStatement("SELECT * FROM PRODUCTS_METADATA\n" +
                      "WHERE PRODUCTS_METADATA.CREATED_TIME = ?;")) {
@@ -199,21 +202,13 @@ public class ProductRepositoryDB implements ProductRepository {
 
             ResultSet metadataRs = metadataStatement.executeQuery();
             while (metadataRs.next()) {
-                List<Product> listaProizvoda = new ArrayList<>();
                 Long id = metadataRs.getLong("PRODUCTS_METADATA_ID");
-                try (PreparedStatement productStatement = connection.prepareStatement("SELECT PRODUCTS.* FROM PRODUCTS\n" +
-                        "WHERE PRODUCTS.PRODUCTS_METADATA_ID = ?")) {
-                    productStatement.setLong(1, id);
-                    ResultSet productRs = productStatement.executeQuery();
+                LocalDateTime createdTime = metadataRs.getObject("CREATED_TIME", LocalDateTime.class);
+                String title = metadataRs.getString("TITLE");
 
-                    while (productRs.next()) {
-                        listaProizvoda.add(new Product(productRs.getString("NAME"), productRs.getBigDecimal("PRICE"), productRs.getInt("GRADE"), productRs.getString("UNIT")));
-                    }
-                }
-                listaMetadata.add(new ProductsMetadata(metadataRs.getLong("PRODUCTS_METADATA_ID"), metadataRs.getObject("CREATED_TIME", LocalDateTime.class), metadataRs.getString("TITLE"), listaProizvoda));
-
+                metadataList.add(new ProductsMetadata(id, createdTime, title, fetchProductsForMetadata(connection, id)));
             }
-           return listaMetadata;
+            return metadataList;
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }

@@ -39,32 +39,32 @@ public class Product implements Serializable {
         return name;
     }
 
-    public void setName(String naziv) {
-        this.name = naziv;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal cijena) {
-        this.price = cijena;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public String getUnit() {
         return unit;
     }
 
-    public void setUnit(String mjernaJedinica) {
-        this.unit = mjernaJedinica;
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public Integer getGrade() {
         return grade;
     }
 
-    public void setGrade(Integer ocjena) {
-        this.grade = ocjena;
+    public void setGrade(Integer grade) {
+        this.grade = grade;
     }
 
     public Long getId() {
@@ -78,10 +78,10 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return "Product{" +
-                "naziv='" + name + '\'' +
-                ", cijena=" + price +
-                ", mjernaJedinica='" + unit + '\'' +
-                ", ocjena=" + grade +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                ", unit='" + unit + '\'' +
+                ", grade=" + grade +
                 '}';
     }
 }

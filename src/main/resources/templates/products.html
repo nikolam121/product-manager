@@ -8,17 +8,17 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container mt-4">
-    <h1>Proizvodi</h1>
+    <h1>Products</h1>
 
     <div class="row mb-3">
         <div class="col-auto">
             <input type="date" id="date-input" class="form-control">
         </div>
         <div class="col-auto">
-            <button id="fetch-btn" class="btn btn-primary">Dohvati proizvode</button>
+            <button id="fetch-btn" class="btn btn-primary">Fetch products</button>
         </div>
         <div class="col-auto">
-            <button id="sum-btn" class="btn btn-secondary">Suma cijena</button>
+            <button id="sum-btn" class="btn btn-secondary">Sum of prices</button>
         </div>
     </div>
 
@@ -26,7 +26,7 @@
 
     <div class="mb-3">
         <div id="spinner" class="spinner-border d-none" role="status">
-            <span class="visually-hidden">Učitavanje...</span>
+            <span class="visually-hidden">Loading...</span>
         </div>
         <span id="sum-result"></span>
     </div>
@@ -34,10 +34,10 @@
     <table class="table">
         <thead>
         <tr>
-            <th>Naziv</th>
-            <th>Cijena</th>
-            <th>Mjerna jedinica</th>
-            <th>Ocjena</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Unit</th>
+            <th>Grade</th>
         </tr>
         </thead>
         <tbody id="products-body"></tbody>

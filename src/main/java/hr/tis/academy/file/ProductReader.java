@@ -25,12 +25,12 @@ public class ProductReader {
                      Files.newBufferedReader(FileSystemConfiguration.PRODUCTS_FILES_FOLDER_PATH.resolve(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String naziv = line.substring(0, 100).trim();
-                BigDecimal cijena = new BigDecimal(line.substring(100, 110).trim());
-                String mjernaJedinica = line.substring(110, 120).trim();
-                Integer ocjena = Integer.parseInt(line.substring(120, 121).trim());
+                String name = line.substring(0, 100).trim();
+                BigDecimal price = new BigDecimal(line.substring(100, 110).trim());
+                String unit = line.substring(110, 120).trim();
+                Integer grade = Integer.parseInt(line.substring(120, 121).trim());
 
-                products.add(new Product(naziv, cijena, ocjena, mjernaJedinica));
+                products.add(new Product(name, price, grade, unit));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -39,5 +39,3 @@ public class ProductReader {
         return new ProductsMetadata(id, createdTime, title, products);
     }
 }
-
-
