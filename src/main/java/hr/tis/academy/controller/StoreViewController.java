@@ -34,7 +34,8 @@ public class StoreViewController {
 
     @GetMapping("/new")
     public String form(Model model) {
-        model.addAttribute("form", new StoreForm());
+        model.addAttribute("storeForm", new StoreForm());
+        model.addAttribute("formAction", "/stores-view");
         return "stores/form";
     }
 
@@ -51,7 +52,7 @@ public class StoreViewController {
     public String edit(@PathVariable("storeId") Long id, Model model) {
         StoreForm sf = storeFormMapper.toEntity(storeService.findById(id));
         model.addAttribute("storeForm", sf);
-        model.addAttribute("action",   id + "/edit");
+        model.addAttribute("formAction", "/stores-view/" + id + "/edit");
         return "stores/form";
     }
 
