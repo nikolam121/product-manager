@@ -1,37 +1,40 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <head>
-            <meta charset="UTF-8">
-            <link rel="stylesheet" href="css/style.css">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        </head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </head>
     <body>
     <div th:replace="fragments/navbar :: navbar"></div>
+    <div class="container">
+        <h1>Dućani</h1>
+        <a class="btn btn-success mb-3" th:href="@{/stores-view/new}">Novi dućan</a>
         <p th:if="${#lists.isEmpty(stores)}">Store list is empty</p>
-        <div th:if="${not #lists.isEmpty(stores)}">
-            <tr th:each="store : ${stores}">
-                <br>
-                <td th:text="${store.storeName}"></td>
-                <td th:text="${store.address.city}"></td>
-                <br>
-                <td>
-                    <a class="btn btn-sm btn-primary"
-                       th:href="@{/stores-view/{id}(id=${store.id})}">Detalji</a>
-                </td>
-                <br>
-                <td>
-                    <a class="btn btn-sm btn-primary"
-                       th:method="post" th:href="@{/stores-view/{storeId}/edit(storeId=${store.id})}">Uredi</a>
-                </td>
-                <br>
-                <td>
-                    <form th:action="@{/stores-view/{id}/delete(id=${store.id})}" method="post">
-                        <button type="submit" class="btn btn-sm btn-danger">Obriši</button>
-                    </form>
-                </td>
-            </tr>
-        </div>
+        <table class="table" th:if="${not #lists.isEmpty(stores)}">
+            <thead>
+                <tr>
+                    <th>Naziv</th>
+                    <th>Grad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="store : ${stores}">
+                    <td th:text="${store.storeName}"></td>
+                    <td th:text="${store.address.city}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-primary"
+                           th:href="@{/stores-view/{id}(id=${store.id})}">Detalji</a>
+                        <a class="btn btn-sm btn-primary"
+                           th:href="@{/stores-view/{storeId}/edit(storeId=${store.id})}">Uredi</a>
+                        <form th:action="@{/stores-view/{id}/delete(id=${store.id})}" method="post" style="display:inline">
+                            <button type="submit" class="btn btn-sm btn-danger">Obriši</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     </body>
-</html>>
+</html>
