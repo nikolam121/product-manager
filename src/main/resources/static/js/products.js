@@ -55,7 +55,7 @@ async function fetchSum(date) {
 
     document.getElementById("poruka").textContent = "";
     const sum = await response.json();
-    resultSpan.textContent = `Suma cijena: ${sum}`;
+    resultSpan.textContent = `Sum of prices: ${sum}`;
 }
 
 document.getElementById("fetch-btn").addEventListener("click", () => {

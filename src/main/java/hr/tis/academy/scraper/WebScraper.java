@@ -17,13 +17,13 @@ import java.util.ArrayList;
 public class WebScraper {
     @Value("${base.url}")
     private String baseUrl;
-    @Value("${broj.iteracija}")
-    private int brojIteracija;
+    @Value("${iteration.count}")
+    private int iterationCount;
 
     public ProductsMetadata fetchProducts() {
         ProductsMetadata metadata = null;
         try {
-            for (int page = 1; page <= brojIteracija; page++) {
+            for (int page = 1; page <= iterationCount; page++) {
                 Document doc = Jsoup.connect(baseUrl + "?page=" + page).userAgent("Mozilla/5.0").get();
 
                 if (metadata == null) {
@@ -44,7 +44,7 @@ public class WebScraper {
             }
 
         } catch (IOException e) {
-            System.err.println("Greška: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
         }
 
         return metadata;

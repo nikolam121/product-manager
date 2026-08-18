@@ -9,8 +9,8 @@
     <body>
         <div th:replace="fragments/navbar :: navbar"></div>
         <form class="container" th:action="@{${formAction}}" th:object="${storeForm}" method="post">
-            <h1>Dućan</h1>
-            <label class="form-label" for="storeName">Naziv dućana</label>
+            <h1>Store</h1>
+            <label class="form-label" for="storeName">Store name</label>
             <input class="form-control" id="storeName" th:field="*{storeName}">
             <div class="text-danger" th:if="${#fields.hasErrors('storeName')}"
                  th:errors="*{storeName}"></div>
@@ -20,32 +20,32 @@
             <div class="text-danger" th:if="${#fields.hasErrors('email')}"
                  th:errors="*{email}"></div>
             <br>
-            <label class="form-label" for="telephoneNumber">Broj telefona</label>
+            <label class="form-label" for="telephoneNumber">Phone number</label>
             <input class="form-control" id="telephoneNumber" th:field="*{telephoneNumber}">
             <div class="text-danger" th:if="${#fields.hasErrors('telephoneNumber')}"
                  th:errors="*{telephoneNumber}"></div>
             <br>
-            <label class="form-label" for="city">Grad</label>
+            <label class="form-label" for="city">City</label>
             <input class="form-control" id="city" th:field="*{city}">
             <div class="text-danger" th:if="${#fields.hasErrors('city')}"
                  th:errors="*{city}"></div>
             <br>
-            <label class="form-label" for="country">Država</label>
+            <label class="form-label" for="country">Country</label>
             <input class="form-control" id="country" th:field="*{country}">
             <div class="text-danger" th:if="${#fields.hasErrors('country')}"
                  th:errors="*{country}"></div>
             <br>
-            <label class="form-label" for="streetName">Ulica</label>
+            <label class="form-label" for="streetName">Street</label>
             <input class="form-control" id="streetName" th:field="*{streetName}">
             <div class="text-danger" th:if="${#fields.hasErrors('streetName')}"
                  th:errors="*{streetName}"></div>
             <br>
-            <label class="form-label" for="houseNumber">Kućni broj</label>
+            <label class="form-label" for="houseNumber">House number</label>
             <input class="form-control" id="houseNumber" th:field="*{houseNumber}">
             <div class="text-danger" th:if="${#fields.hasErrors('houseNumber')}"
                  th:errors="*{houseNumber}"></div>
 
-            <button type="submit" class="btn btn-success">Spremi</button>
+            <button type="submit" class="btn btn-success">Save</button>
         </form>
     </body>
 </html>

@@ -8,14 +8,14 @@
     <body>
     <div th:replace="fragments/navbar :: navbar"></div>
     <div class="container">
-        <h1>Dućani</h1>
-        <a class="btn btn-success mb-3" th:href="@{/stores-view/new}">Novi dućan</a>
+        <h1>Stores</h1>
+        <a class="btn btn-success mb-3" th:href="@{/stores-view/new}">New store</a>
         <p th:if="${#lists.isEmpty(stores)}">Store list is empty</p>
         <table class="table" th:if="${not #lists.isEmpty(stores)}">
             <thead>
                 <tr>
-                    <th>Naziv</th>
-                    <th>Grad</th>
+                    <th>Name</th>
+                    <th>City</th>
                     <th></th>
                 </tr>
             </thead>
@@ -25,11 +25,11 @@
                     <td th:text="${store.address.city}"></td>
                     <td>
                         <a class="btn btn-sm btn-primary"
-                           th:href="@{/stores-view/{id}(id=${store.id})}">Detalji</a>
+                           th:href="@{/stores-view/{id}(id=${store.id})}">Details</a>
                         <a class="btn btn-sm btn-primary"
-                           th:href="@{/stores-view/{storeId}/edit(storeId=${store.id})}">Uredi</a>
+                           th:href="@{/stores-view/{storeId}/edit(storeId=${store.id})}">Edit</a>
                         <form th:action="@{/stores-view/{id}/delete(id=${store.id})}" method="post" style="display:inline">
-                            <button type="submit" class="btn btn-sm btn-danger">Obriši</button>
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                         </form>
                     </td>
                 </tr>

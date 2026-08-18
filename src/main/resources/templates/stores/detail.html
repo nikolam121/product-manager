@@ -13,23 +13,23 @@
             <table class="table">
                 <tbody>
                     <tr>
-                        <th>Grad</th>
+                        <th>City</th>
                         <td th:text="${store.address.city}"></td>
                     </tr>
                     <tr>
-                        <th>Država</th>
+                        <th>Country</th>
                         <td th:text="${store.address.country}"></td>
                     </tr>
                     <tr>
-                        <th>Ulica</th>
+                        <th>Street</th>
                         <td th:text="${store.address.streetName}"></td>
                     </tr>
                     <tr>
-                        <th>Kućni broj</th>
+                        <th>House number</th>
                         <td th:text="${store.address.houseNumber}"></td>
                     </tr>
                     <tr>
-                        <th>Telefon</th>
+                        <th>Phone</th>
                         <td th:text="${store.telephoneNumber}"></td>
                     </tr>
                     <tr>
@@ -39,13 +39,13 @@
                 </tbody>
             </table>
 
-            <h2>Radno vrijeme</h2>
+            <h2>Working Hours</h2>
             <table class="table" th:if="${not #lists.isEmpty(store.workingDays)}">
                 <thead>
                     <tr>
-                        <th>Dan</th>
-                        <th>Od</th>
-                        <th>Do</th>
+                        <th>Day</th>
+                        <th>From</th>
+                        <th>To</th>
                     </tr>
                 </thead>
                 <tbody>
