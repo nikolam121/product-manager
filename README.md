@@ -15,15 +15,9 @@ Built during the TIS Academy Spring workshop 2026 as a team project (team Mljet)
 | Scraping | jsoup |
 | Documentation | springdoc OpenAPI (Swagger UI) |
 
-## Prerequisites
-
-The project depends on the `hr.tis.academy:common` module. If you don't have it in your local Maven repository, install it first:
-
-```bash
-cd ../common && ./mvnw install
-```
-
 ## Running
+
+The shared DTOs and enums from the workshop's `common` module are included in `hr.tis.academy.common`, so the project builds on its own. It needs JDK 25.
 
 ```bash
 ./mvnw spring-boot:run
