@@ -25,7 +25,7 @@ The shared DTOs and enums from the workshop's `common` module are included in `h
 
 The app starts at `http://localhost:9090/product_manager_mljet`.
 
-The database is a file-based H2 instance with `ddl-auto=create`, so the schema is rebuilt on every startup and seed data is loaded from `src/main/resources/init.sql`.
+The database is a file-based H2 instance with `ddl-auto=create`, so the schema is rebuilt on every startup and the app starts with an empty database. `src/main/resources/init.sql` is a sample dataset from the workshop; it is not loaded automatically.
 
 ## Pages
 
@@ -51,8 +51,14 @@ The database is a file-based H2 instance with `ddl-auto=create`, so the schema i
 | `GET` | `/products/sum` | sum of prices for a date |
 | `GET` | `/products/fetch` | fetch products from the web |
 | `POST` | `/products/save` | fetch and save products |
-| `GET` | `/orders` | all orders |
-| `POST` | `/orders` | create an order |
+| `GET` | `/products-orders` | all orders |
+| `GET` | `/products-orders/{orderId}` | a single order |
+| `GET` | `/products-orders/active` | active orders |
+| `POST` | `/products-orders` | create an order |
+| `PATCH` | `/products-orders/{orderId}/deactivate` | deactivate an order |
+| `GET` | `/employees/{employeeId}` | a single employee |
+| `GET` | `/employees/search` | search employees |
+| `DELETE` | `/employees/{employeeId}` | delete an employee |
 | `GET` | `/common/image` | generate a PNG image with text |
 
 ## Profiles
@@ -63,6 +69,18 @@ The product repository has two implementations selected by a Spring profile:
 | --- | --- |
 | `memory` | in-memory (default, set in `application.properties`) |
 | `db` | directly via JDBC |
+
+## Workshop exercises
+
+`HelloController` (`/common/hello`, `/common/hello-json`, `/common/days-of-week`, `/common/names`, `/common/is-weekend`) and the image endpoint are small exercises from the workshop and are not part of the product features.
+
+## Tests
+
+```bash
+./mvnw test
+```
+
+The unit tests cover order creation (totals, missing store or product) and deactivation.
 
 ## Error handling
 
